@@ -1,0 +1,33 @@
+# mkdocs.yml -- MkDocs configuration, all *.md files relative to docs/
+site_name: Forti Stacks
+repo_url: 'https://github.com/fortinet-solutions-cse/fortistacks'
+edit_uri: edit/master/docs
+site_description: 'Multiple ready to use demo examples of automated Fortinet deployments.'
+extra:
+  favicon: 'https://fortinet.com/favicon.ico'
+  social:
+    - type: 'github'
+      link: 'https://github.com/fortinet-solutions-cse/fortistacks'
+theme: readthedocs
+nav:
+- Home: 'index.md'
+- Quickstart: 'quickstart.md'
+- Minipoc: 'mini-poc.md'
+- Fortigate: 'Fortigate.md'
+- Other Fortinet VMs:
+    - Fortimanager: 'Fortimanager.md'
+- Kubernetes:
+    - AKS: 'Kubernetes/AKS-Private-secured.md'
+- MANO:
+    - Cloudify: 'MANO/Cloudify.md'
+    - osm.etsi.org: 'MANO/OSM.md'
+    - Openstack Heat: 'MANO/Openstack-Heat.md'
+- Advanced examples:
+    - Lifecycle Management: 'Advanced Examples/LCM.md'
+    - SDWAN playground: 'Advanced Examples/SDWAN.md'
+- Internals:
+    - Fortistacks: 'Internals/About.md'
+    - Public Openstack: 'Internals/Citycloud.md'
+    - Docker client: 'Internals/README-DockerClient.md'
+    - Collect support information: 'Internals/Support-vms-collect.md'
+
