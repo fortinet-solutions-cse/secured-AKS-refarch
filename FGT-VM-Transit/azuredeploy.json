@@ -37,6 +37,25 @@
         "description": "Identifies whether to to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)"
       }
     },
+     "fortigateImageVersion": {
+      "type": "string",
+      "defaultValue": "6.4.3",
+      "allowedValues": [
+        "6.2.0",
+        "6.2.2",
+        "6.2.3",
+        "6.2.4",
+        "6.2.5",
+        "6.4.0",
+        "6.4.1",
+        "6.4.2",
+        "6.4.3",
+        "latest"
+      ],
+      "metadata": {
+        "description": "Only 6.0.0 has the A/P HA feature currently"
+      }
+    },
     "instanceType": {
       "type": "string",
       "defaultValue": "Standard_D2_v2",
@@ -63,13 +82,7 @@
         "description": "Name of Public IP address resource."
       }
     },
-    "publicIPAddressNameFWB": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Name of Public IP address resource."
-      }
-    },
+
     "publicIPResourceGroup": {
       "type": "string",
       "defaultValue": "",
@@ -138,10 +151,7 @@
       "metadata": {
         "description": "Static IP from subnet 1 for port1 of the FortiGate virtual appliance.  Remember Azure reserves the first 3 IPs in each subnet.  When using an exising vnet, verify that this address is not already assigned, example: 10.2.1.4"
       }
-    },      "FortiWebIPSub1": {
-            "defaultValue": "10.0.1.10",
-            "type": "String"
-        },
+    },
     "TransitSubName": {
       "type": "string",
       "defaultValue": "",
@@ -161,10 +171,7 @@
       "metadata": {
         "description": "Static IP from subnet 2 for port1 of the FortiGate virtual appliance.  Remember Azure reserves the first 3 IPs in each subnet.  When using an exising vnet, verify that this address is not already assigned, example: 10.2.2.4"
       }
-    },       "FortiWebIPSub2": {
-            "defaultValue": "10.0.2.10",
-            "type": "String"
-        },
+    },
     "FortinetTags": {
     "type": "object",
     "defaultValue": {
@@ -178,44 +185,8 @@
         "description": "Base URL of the solution template gallery package",
         "artifactsBaseUrl": ""
       }
-    },
-            "FortiWebInstanceName": {
-              "defaultValue": "fortiweb-vm",
-            "type": "String",
-            "metadata": {
-                "description": "Name for FortiWeb virtual appliance."
-            }
-        },
-        "FortiWebImageSKU": {
-            "defaultValue": "fortinet_fw-vm",
-            "allowedValues": [
-                "fortinet_fw-vm",
-                "fortinet_fw-vm_payg"
-            ],
-            "type": "String",
-            "metadata": {
-                "description": "Identifies whether to use PAYG (on demand licensing) or BYOL license model (where license is purchased separately)"
-            }
-        },
-        "FortiWebImageVersion": {
-            "defaultValue": "latest",
-            "allowedValues": [
-                "5.7.1",
-                "5.8.6",
-                "6.0.2",
-                "6.1.0",
-                "6.2.1",
-                "latest"
-            ],
-            "type": "String",
-            "metadata": {
-                "description": "Select image version."
-            }
-        },
-            "FortiWebIPSub1": {
-            "defaultValue": "10.0.1.10",
-            "type": "String"
-        }
+    }
+
   },
   "variables": {
     "vmStorageAccountContainerName": "vhds",
@@ -237,7 +208,6 @@
 
     "FGDMZAddress": "[parameters('fortiGateIP2')]",
     "FGPubFacingAddress": "[parameters('fortiGateIP1')]",
-    "FWPubFacingAddress": "[parameters('fortiWebIPSub1')]",
     "apiVer": "2015-06-15",
     "compute_VM_fg1_Name": "[parameters('FortiGateName')]",
 
@@ -251,15 +221,8 @@
 
     "compute_AvailabilitySet_FG_Name": "[concat(parameters('FortiGateName'),'AvailSet')]",
     "compute_AvailabilitySet_FG_Id": "[resourceId('Microsoft.Compute/availabilitySets', variables('compute_AvailabilitySet_FG_Name'))]",
-    "network_NIC_fw11_Name": "[concat(parameters('FortiWebInstanceName'),'-Nic0')]",
-        "network_NIC_fw11_Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('network_NIC_fw11_Name'))]",
-        "network_NIC_fw12_Name": "[concat(parameters('FortiWebInstanceName'),'-Nic1')]",
-        "network_NIC_fw12_Id": "[resourceId('Microsoft.Network/networkInterfaces',variables('network_NIC_fw12_Name'))]",
-        "NSGName": "[concat(parameters('FortiWebInstanceName'),'-NSG')]",
-        "publicIpAddressFWBId": {
-            "id": "[resourceId(parameters('publicIPResourceGroup'), 'Microsoft.Network/publicIPAddresses', parameters('publicIPAddressNameFWB'))]"
-        }
 
+        "NSGName": "[concat(parameters('FortigateName'),'-NSG')]"
   },
   "resources": [
     {
@@ -461,6 +424,9 @@
        "provider": "[toUpper(parameters('FortinetTags').provider)]"
       },
       "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "plan": {
         "name": "[parameters('FortiGateImageSKU')]",
         "publisher": "fortinet",
@@ -481,7 +447,7 @@
           "computerName": "[variables('compute_VM_fg1_Name')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]",
-          "customData": "[base64(concat('config system interface\n edit port2\n set mode dhcp\n set defaultgw disable \n end\n config router static\n edit 1\n set dst 10.40.0.0 255.255.0.0\n set gateway 172.27.40.65\n set device \"port2\"\n next\n end \n config firewall policy\n edit 1\n    set name \"Allow any any\"\n    set srcintf \"any\"\n    set dstintf \"any\"\n    set srcaddr \"all\"\n    set dstaddr \"all\"\n    set action accept\n    set schedule \"always\"\n    set service \"ALL\"\n    set nat enable\n next\nend\n'))]"
+          "customData": "[base64(concat('config system sdn-connector\nedit AzureSDN\nset type azure\nend\nend\nconfig system interface\n edit port2\n set mode dhcp\n set defaultgw disable \n end\n config router static\n edit 1\n set dst 10.40.0.0 255.255.0.0\n set gateway 172.27.40.65\n set device \"port2\"\n next\n end \n config firewall policy\n edit 1\n    set name \"Allow any any\"\n    set srcintf \"any\"\n    set dstintf \"any\"\n    set srcaddr \"all\"\n    set dstaddr \"all\"\n    set action accept\n    set schedule \"always\"\n    set service \"ALL\"\n    set nat enable\n next\nend\n config firewall vip\n    edit \"Jumphost\"\n        set extintf \"port1\"\n        set portforward enable\n        set mappedip \"172.27.40.73\"\n        set extport 2222\n        set mappedport 22\n    next\nend\nconfig firewall policy\n    edit 2\n        set name \"Jumphost\"\n        set srcintf \"port1\"\n        set dstintf \"port2\"\n        set srcaddr \"all\"\n        set dstaddr \"Jumphost\"\n        set action accept\n        set schedule \"always\"\n        set service \"SSH\"\n        set fsso disable\n        set nat enable\n    next\nend'))]"
         },
         "storageProfile": {
           "imageReference": {
@@ -519,20 +485,7 @@
         }
       }
     },
-           {
-            "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2017-09-01",
-            "name": "[parameters('publicIPAddressNameFWB')]",
-            "location": "[parameters('location')]",
-            "tags": {
-                "provider": "[toUpper(parameters('FortinetTags').provider)]"
-            },
-             "properties": {
 
-             "publicIPAllocationMethod": "[parameters('publicIPAddressType')]"
-           },
-         "condition": "[equals(parameters('publicIPNewOrExistingOrNone'), 'new')]"
-        },
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2017-09-01",

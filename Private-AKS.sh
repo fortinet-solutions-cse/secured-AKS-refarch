@@ -30,25 +30,26 @@ rm -rf ~/.kube/*
 az vm image terms accept --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm_payg --publisher fortinet
 #az vm image terms accept --offer fortinet_fortigate-vm_v5 --plan fortinet_fg-vm --publisher fortinet
 
-az  deployment group validate  --template-file FGT-FWB-VMs-2-Subnets/azuredeploy.json \
+az  deployment group validate  --template-file FGT-VM-Transit/azuredeploy.json \
                                --resource-group $GROUP_NAME  --parameters Az-FGT-parameters.json
 
 DEPLOY_NAME=$GROUP_NAME"-TRANSIT"
 az  deployment group create --name $DEPLOY_NAME  -g $GROUP_NAME \
- --template-file FGT-FWB-VMs-2-Subnets/azuredeploy.json \
+ --template-file FGT-VM-Transit/azuredeploy.json \
  --parameters Az-FGT-parameters.json
 
 
 SNET2=`az network vnet subnet list     --resource-group  $GROUP_NAME     --vnet-name fortistacks-Vnet     --query "[1].id" --output tsv`
 
 ## service VM on the transit network for accessing AKS
-#az vm create \
-#  --resource-group "$GROUP_NAME" --location "$REGION"\
-#  --name fortistacks-jumphost \
-#  --image UbuntuLTS \
-#  --admin-username azureuser \
-#  --admin-password Fortin3t-aks \
-#  --subnet $SNET2  --authentication-type password  --no-wait
+az vm create \
+  --resource-group "$GROUP_NAME" --location "$REGION"\
+  --name fortistacks-jumphost \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --admin-password Fortin3t-aks \
+  --private-ip-address 172.27.40.73 \
+  --subnet $SNET2  --authentication-type password  --no-wait
 
 
 
@@ -112,7 +113,7 @@ az acr create -n $MYACR -g $GROUP_NAME --sku basic
 
 az aks create \
     --resource-group "$GROUP_NAME" \
-    --name "secure-AKS" \
+    --name "private-AKS" \
     --load-balancer-sku standard \
     --enable-private-cluster \
     --network-plugin azure \
@@ -122,7 +123,6 @@ az aks create \
     --docker-bridge-address 172.17.0.1/16 \
     --service-principal $SP_ID \
     --client-secret $SP_PASSWORD \
-    --network-policy calico \
     --node-count 2 \
     --node-vm-size Standard_A2_v2\
     --enable-cluster-autoscaler \
@@ -137,19 +137,18 @@ az aks create \
 # next private registry https://docs.microsoft.com/en-us/azure/aks/cluster-container-registry-integration
 
 # add the private dns to the transit network for kubectl to work on jumphost
-AKS_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name secure-aks --query nodeResourceGroup -o tsv)
+AKS_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name private-AKS --query nodeResourceGroup -o tsv)
 AKS_PRIV_DNS=$(az network private-dns  zone list -g $AKS_RESOURCE_GROUP -o tsv --query [0].name)
 FTNT_VNET_ID=$(az network vnet show --resource-group $GROUP_NAME --name fortistacks-vnet --query "id" -o tsv )
 az network private-dns  link vnet create --name aks-dns --virtual-network "$FTNT_VNET_ID" --zone-name "$AKS_PRIV_DNS" \
    --registration-enabled false -g "$AKS_RESOURCE_GROUP"
 
 # Node count if quota restrictions
-az aks get-credentials --resource-group "$GROUP_NAME"  --name "secure-AKS"
+az aks get-credentials --resource-group "$GROUP_NAME"  --name "private-AKS"
 
 FGTAZIP=`az network public-ip show --name fgtaz   --resource-group $GROUP_NAME  --query ipAddress -o tsv`
 echo " You can login on fortigate at https://$FGTAZIP"
-echo "can configure your azure sdn connector with: "
-echo "$SP"
+echo "Kubernetes credentials are in ~/.kube/config"
 ## KAPI_ID=`az network private-endpoint show --name kube-apiserver --resource-group $AKS_RESOURCE_GROUP --query "networkInterfaces[0].id" -o tsv`
 ## KAPI_IP=`az network  nic show --ids $KAPI_ID --query "ipConfigurations[0].privateIpAddress" -o tsv`
 
