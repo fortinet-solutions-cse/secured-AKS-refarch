@@ -33,7 +33,7 @@ az login
 ```
 The script will deploy the following and ensure all AKS traffic goes to the Firewall for analysis.
 Again for education, feature it can be split and made elastic.
-![Architecture](SecureAKS.svg)
+![Architecture](SecureAKS.png)
 
 # Day 1
 Apply configuration to the FGT.
