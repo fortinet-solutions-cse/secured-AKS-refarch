@@ -51,7 +51,6 @@
   - name: Configure user groups.
     fortios_user_group:
       vdom:  "{{ vdom }}"
-      https: "False"
       state: "present"
       user_group:
         group_type: "firewall"
