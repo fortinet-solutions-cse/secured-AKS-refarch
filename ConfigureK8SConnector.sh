@@ -2,13 +2,13 @@
 #
 #    Configure Fortigate Kubernetes connector
 #
-#    Authors: Nicolas Thomss  <fortistacksfortinet.com>
+#    Authors: Nicolas Thomss  <nthomas AT fortinet.com>
 #
 # Be sure to have login (az login) first
 
 [ -f $1 ]
 export FGTCA=$(base64 Fortinet_AKS_CA.cer -w0) # or -b0 on MacOS
-GROUP_NAME="fortistacks-aks"
+GROUP_NAME="ftnt-demo-aks"
 CLUSTER_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name secure-aks --query nodeResourceGroup -o tsv)
 SCALE_SET_NAME=$(az vmss list --resource-group $CLUSTER_RESOURCE_GROUP --query [0].name -o tsv)
 
@@ -20,7 +20,7 @@ az vmss update-instances --instance-ids '*' \
     --resource-group $CLUSTER_RESOURCE_GROUP \
     --name $SCALE_SET_NAME
 echo "collecting information on Azure"
-GROUP_NAME="fortistacks-aks"
+GROUP_NAME="ftnt-demo-aks"
 AKS_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name secure-aks --query nodeResourceGroup -o tsv)
 KAPI_ID=`az network private-endpoint show --name kube-apiserver --resource-group $AKS_RESOURCE_GROUP --query "networkInterfaces[0].id" -o tsv`
 KAPI_IP=`az network  nic show --ids $KAPI_ID --query "ipConfigurations[0].privateIpAddress" -o tsv`

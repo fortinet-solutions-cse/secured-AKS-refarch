@@ -42,7 +42,7 @@
       vdom:  "{{ vdom }}"
       state: "present"
       user_local:
-        email_to: "demo@fortistacks.net"
+        email_to: "demo@ftnt-demo.net"
         name: "aks"
         passwd: "Fortin3t-aks"
         status: "enable"
@@ -212,3 +212,33 @@
         scan_botnet_connections: "block"
         application_list: "block-high-risk"
         ips_sensor: "protect_client"
+  - name: Configure Intra cluster
+    fortios_firewall_policy:
+      vdom:  "{{ vdom }}"
+      state: "present"
+      firewall_policy:
+        policyid: 43
+        name: "In cluster"
+        srcintf:
+          - name: "port2"
+        dstintf:
+          - name: "port2"
+        srcaddr:
+          - name: "K8S"
+        dstaddr:
+          - name: "K8S"
+        action: accept
+        schedule: "always"
+        service:
+          - name: "ALL"
+        fsso: disable
+        nat: disable
+        utm_status: "enable"
+        av_profile: "default"
+        logtraffic: "all"
+  - name: Remove all-all
+    fortios_firewall_policy:
+      vdom:  "{{ vdom }}"
+      state: "absent"
+      firewall_policy:
+        policyid: 1

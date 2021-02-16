@@ -8,8 +8,8 @@ It has been kept simple (1 Fortigate) for education and cost perspective. Contac
 Of course you need an Azure account with all necessary subscriptions and permissions.
 Get the code
 ```
-git clone https://github.com/fortinet-solutions-cse/fortistacks.git --recursive
-cd fortistacks/Azure
+git clone https://github.com/fortinet-solutions-cse/ftnt-demo.git --recursive
+cd ftnt-demo/Azure
 ```
 ## Using provided docker image
 ```
@@ -90,7 +90,7 @@ You get the Fortinet_AKS_CA.crt from your running Fortigate in the custom deep i
 
 ```
 export FGTCA=$(base64 Fortinet_AKS_CA.cer -w0) # or -b0 on MacOS
-GROUP_NAME="fortistacks-aks"
+GROUP_NAME="ftnt-demo-aks"
 CLUSTER_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name secure-aks --query nodeResourceGroup -o tsv) 
 SCALE_SET_NAME=$(az vmss list --resource-group $CLUSTER_RESOURCE_GROUP --query [0].name -o tsv)
 

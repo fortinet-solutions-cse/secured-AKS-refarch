@@ -2,7 +2,7 @@
 
 ## Azure CLI
 ```shell script
- az configure --defaults location=westeurope group=nthomas-aks-fortistacks
+ az configure --defaults location=westeurope group=nthomas-aks-ftnt-demo
 ```
 Set defaults
 
@@ -183,7 +183,7 @@ for pods CA injections
 
 ## ACR usage (Azure registry)
 ```shell script
-az acr login --name fortistacksContainerRegistry --expose-token
+az acr login --name ftnt-demoContainerRegistry --expose-token
 ```
 Get the token to register your docker cmd, (access from public by default)
 

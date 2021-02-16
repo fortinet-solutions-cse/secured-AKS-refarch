@@ -2,14 +2,14 @@
 #
 #    Configure Fortigate Kubernetes connector
 #
-#    Authors: Nicolas Thomss  <fortistacksfortinet.com>
+#    Authors: Nicolas Thomss  <nthomas AT fortinet.com>
 #
 # Be sure to have login (az login) first
 [ $# == 1 ] || echo "Must pass CA file as argument"
 [ -f $1 ]  || echo "Argument $1 must be a file "
 echo "collecting information on Azure"
 
-GROUP_NAME="fortistacks-aks"
+GROUP_NAME="ftnt-demo-aks"
 export FGTCA=$(base64 $1 -w0) # or -b0 on MacOS
 CLUSTER_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name secure-aks --query nodeResourceGroup -o tsv)
 SCALE_SET_NAME=$(az vmss list --resource-group $CLUSTER_RESOURCE_GROUP --query [0].name -o tsv)

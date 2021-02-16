@@ -2,15 +2,15 @@
 #
 #    Configure Fortigate Kubernetes connector
 #
-#    Authors: Nicolas Thomss  <fortistacksfortinet.com>
+#    Authors: Nicolas Thomss  <nthomas AT fortinet.com>
 #
 # Be sure to have login (az login) first
 
 # src: https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/aks/azure-files-volume.md
 # create a share Azurefile (cheaper ?) to try to share CA certificates to pods.
 
-AKS_PERS_STORAGE_ACCOUNT_NAME=fortistacksstorage
-AKS_PERS_RESOURCE_GROUP=fortistacks-aks
+AKS_PERS_STORAGE_ACCOUNT_NAME=ftnt-demostorage
+AKS_PERS_RESOURCE_GROUP=ftnt-demo-aks
 AKS_PERS_LOCATION=westeurope
 AKS_PERS_SHARE_NAME=aksshares
 
