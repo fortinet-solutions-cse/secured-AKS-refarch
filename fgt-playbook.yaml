@@ -64,7 +64,7 @@
       state: "present"
       firewall_address:
         name: "K8Svnet"
-        subnet: "10.40.0.0/16"
+        subnet: "172.27.40.0/22"
         type: "ipmask"
   - name: AKS services net address
     fortios_firewall_address:
@@ -183,35 +183,6 @@
           - name: "ALL"
         fsso: disable
         nat: enable
-  - name: Configure Egress
-    fortios_firewall_policy:
-      vdom:  "{{ vdom }}"
-      state: "present"
-      firewall_policy:
-        policyid: 42
-        name: "Egress"
-        srcintf:
-          - name: "port2"
-        dstintf:
-          - name: "port1"
-        srcaddr:
-          - name: "K8S"
-        dstaddr:
-          - name: "all"
-        action: accept
-        schedule: "always"
-        service:
-          - name: "ALL"
-        fsso: disable
-        nat: enable
-        utm_status: "enable"
-        av_profile: "default"
-        logtraffic: "all"
-        ssl_ssh_profile: "deep-inspection"
-        dnsfilter_profile: "default"
-        scan_botnet_connections: "block"
-        application_list: "block-high-risk"
-        ips_sensor: "protect_client"
   - name: Configure Intra cluster
     fortios_firewall_policy:
       vdom:  "{{ vdom }}"
@@ -236,9 +207,42 @@
         utm_status: "enable"
         av_profile: "default"
         logtraffic: "all"
-  - name: Remove all-all
+  - name: Configure virtual IP to jumphost
+    fortios_firewall_vip:
+      vdom:  "{{ vdom }}"
+      state: "present"
+      firewall_vip:
+#        extaddr:
+#          - name: 0.0.0.0
+        name: "Jumphost"
+        extintf: "port1"
+        portforward: enable
+        mappedip:
+          - range: "172.27.40.73"
+        extport: "2222"
+        mappedport: "22"
+        type: "static-nat"
+  - name: Policy to allow traff to jumphost
     fortios_firewall_policy:
       vdom:  "{{ vdom }}"
-      state: "absent"
+      state: "present"
       firewall_policy:
-        policyid: 1
+        policyid: 44
+        name: "To Jumphost"
+        srcintf:
+          - name: "port1"
+        dstintf:
+          - name: "port2"
+        srcaddr:
+          - name: "all"
+        dstaddr:
+          - name: "Jumphost"
+        action: accept
+        schedule: "always"
+        service:
+          - name: "SSH"
+        fsso: disable
+        nat: enable
+        utm_status: "enable"
+        av_profile: "default"
+        logtraffic: "all"
