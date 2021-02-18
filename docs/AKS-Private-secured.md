@@ -51,10 +51,11 @@ Depends on Fortinet generic blueprint : https://github.com/40net-cloud/fortinet-
 ```
 This deploy a jumphost VM in the transit area for convenience. 
 A AKS with the following options:
- - enable-private-cluster 
- - network-plugin azure 
- - generate-ssh-keys
- - outbound-type userDefinedRouting
+
+- enable-private-cluster 
+- network-plugin azure 
+- generate-ssh-keys
+- outbound-type userDefinedRouting
 
 The result is a fully private setup (API and nodes) and ensuring there is firewall observability and prevention on outbound an inter-nodes traffic.
 ![Architecture](SecureAKS.png)
