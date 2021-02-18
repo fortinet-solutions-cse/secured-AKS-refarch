@@ -51,6 +51,9 @@ Depends on Fortinet generic blueprint : https://github.com/40net-cloud/fortinet-
 ```shell
 ./Step2-PrivateAKS.sh 
 ```
+This second part has been kept in a small script and readable commands so that you can check the differents steps and options by yourself more easily.
+
+
 This deploy a jumphost VM in the transit area for convenience. 
 A AKS with the following options:
 
@@ -82,9 +85,14 @@ To setup the Jumphost once logged on it:
 ```shell
 git clone https://github.com/fortinet-solutions-cse/secured-AKS-refarch
 cd secured-AKS-refarch/jumphost
-./configure-clis.sh 
+sudo ./configure-clis.sh 
+. ../az-variables.sh 
+az login
+# log this as device on microsoft portal
 ./collect-configurations.sh
 ```
+
+Kubectl commands should work after this stage.
 
 ## VPN to Fortigate
 
@@ -98,3 +106,7 @@ Setup Forticlient IPSec client on your laptop with the public IP of the Fortigat
 ![ScreenShot](FortiClient-screenshot.png)
 
 # Use AKS
+
+Kubectl: 
+
+## Azure Registry

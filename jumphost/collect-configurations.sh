@@ -27,7 +27,7 @@ REGION="westeurope"
 # Node count if quota restrictions
 az aks get-credentials --resource-group "$GROUP_NAME"  --name "private-AKS"
 
-FGTAZIP=`az network public-ip show --name fgtaz   --resource-group $GROUP_NAME  --query ipAddress -o tsv`
+FGTAZIP=`az network public-ip show --name FGTPublicIP --resource-group $GROUP_NAME  --query ipAddress -o tsv`
 echo " You can login on fortigate at https://$FGTAZIP"
 echo "Kubernetes credentials are in ~/.kube/config"
 ## KAPI_ID=`az network private-endpoint show --name kube-apiserver --resource-group $AKS_RESOURCE_GROUP --query "networkInterfaces[0].id" -o tsv`

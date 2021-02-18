@@ -1,4 +1,36 @@
-# Follow along demos.
+# Hands on demos
+
+This document simple examples that are ready to use to test the differents protections or this Reference Architecture and capabiliites of the Fortigate to protect the cluster, apps and app traffic.
+
+This is made to be fully compatible with AKS Tutorial and just add the security checks in-traffic provided by Fortigate.
+You can follow the Tutorial with or without this refarch.
+
+
+
+
+## Simple demo app
+
+
+
+## log checks
+
+## Nodes traffic
+
+## Antivirus
+
+
+## internal LB and VIP
+
+## Fortigate as a LoadBalancer
+
+
+
+
+
+
+
+
+
 
 git clone https://github.com/fortinet/k8s-fortigate-ctrl
 

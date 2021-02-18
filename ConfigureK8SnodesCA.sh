@@ -9,9 +9,8 @@
 [ -f $1 ]  || echo "Argument $1 must be a file "
 echo "collecting information on Azure"
 
-GROUP_NAME="ftnt-demo-aks"
 export FGTCA=$(base64 $1 -w0) # or -b0 on MacOS
-CLUSTER_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name secure-aks --query nodeResourceGroup -o tsv)
+CLUSTER_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name private-AKS --query nodeResourceGroup -o tsv)
 SCALE_SET_NAME=$(az vmss list --resource-group $CLUSTER_RESOURCE_GROUP --query [0].name -o tsv)
 
 az vmss extension set      --resource-group $CLUSTER_RESOURCE_GROUP     --vmss-name $SCALE_SET_NAME   \

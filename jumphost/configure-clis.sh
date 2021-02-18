@@ -16,4 +16,4 @@ pip3 --no-cache-dir install ansible
 # see https://galaxy.ansible.com/fortinet/fortios
 ansible-galaxy collection install fortinet.fortios
 az extension add --name aks-preview
-chown -R azureuser:azureuser .azure/
+chown -R azureuser:azureuser  ~/.azure/

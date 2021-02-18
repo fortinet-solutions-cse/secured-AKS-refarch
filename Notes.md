@@ -34,7 +34,7 @@ Check endpoint (if enabling url filter it will be blocked)
 
 Ref https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-linux
 ```shell script
-CLUSTER_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name secure-aks --query nodeResourceGroup -o tsv) 
+CLUSTER_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name private-AKS --query nodeResourceGroup -o tsv) 
 SCALE_SET_NAME=$(az vmss list --resource-group $CLUSTER_RESOURCE_GROUP --query [0].name -o tsv)
 az vmss extension set  \
     --resource-group $CLUSTER_RESOURCE_GROUP \
