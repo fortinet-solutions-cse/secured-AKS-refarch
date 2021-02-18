@@ -36,10 +36,12 @@ In addition you must install Fortigate support for Ansible:
 ansible-galaxy collection install fortinet.fortios
 ```
 
+You can change region and or name of the resource group using the az-variables.sh file.
 
 ## Script to set the architecture
 ```shell
 az login
+source az-variables.sh
 ./Step1-FortigateAndNetworks.sh
 ```
 This deploy a single fortigate VM with predefined setup. To login fgtadmin/Fortin3t-aks to the fortigate. It can be replaced by a more advanced Fortigate in HA, scalable transit etc..
@@ -88,9 +90,11 @@ cd secured-AKS-refarch/jumphost
 
 The Fortigate has been setup (Ansible) to accept a VPN IpSec to the environment. (recommended)
 Setup Forticlient IPSec client on your laptop with the public IP of the Fortigate:
+
 - psk: Fortin3t-aks
 - user: aks
 - password: Fortin3t-aks
+
 ![ScreenShot](FortiClient-screenshot.png)
 
 # Use AKS
