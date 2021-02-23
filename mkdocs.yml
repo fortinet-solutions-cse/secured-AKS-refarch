@@ -11,5 +11,5 @@ extra:
 theme: readthedocs
 nav:
 - Home: 'index.md'
-- AKS: 'AKS-Private-secured.md'
+
 
