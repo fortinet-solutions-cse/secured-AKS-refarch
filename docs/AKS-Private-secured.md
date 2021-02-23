@@ -63,7 +63,7 @@ A AKS with the following options:
 - outbound-type userDefinedRouting
 
 The result is a fully private setup (API and nodes) and ensuring there is firewall observability and prevention on outbound an inter-nodes traffic.
-![Architecture](SecureAKS.png)
+![Architecture](images/SecureAKS.png)
 
 ## Fortigate setup
 Apply configuration to the FGT.
@@ -103,7 +103,7 @@ Setup Forticlient IPSec client on your laptop with the public IP of the Fortigat
 - user: aks
 - password: Fortin3t-aks
 
-![ScreenShot](FortiClient-screenshot.png)
+![ScreenShot](images/FortiClient-screenshot.png)
 
 # Use AKS
 
