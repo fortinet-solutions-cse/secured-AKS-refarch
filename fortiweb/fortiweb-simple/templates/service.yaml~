@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortiweb-single
+  labels:
+    app: fortiweb-single
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  # may try nodeport type to see if works better for K8S connector
+  ports:
+    - port: 80
+      name: http
+    - port: 443
+      name: https
+    - name: mgmt
+      port: 8008
+      targetPort: 8
+    - name: gui
+      port: 8443
+      targetPort: 43
+    - name: mgmt6
+      port: 996
+      targetPort: 996
+    - name: mgmt7
+      port: 997
+      targetPort: 997
+  selector:
+    app: fortiweb-single
+

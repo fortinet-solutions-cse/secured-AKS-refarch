@@ -1,0 +1,76 @@
+# Using your own az cli and jumphost 
+
+Depending on your environement you will need Azure cli (Ansible at least 2.9 is good to have but optionnal)
+
+
+## Script to set the architecture
+```shell
+az login
+export GROUP_NAME="ftnt-demo-aks"
+export REGION="westeurope"
+./Step1-FortigateAndNetworks.sh
+```
+This deploy a single fortigate VM with predefined setup. To login fgtadmin/Fortin3t-aks to the fortigate. It can be replaced by a more advanced Fortigate in HA, scalable transit etc..
+Depends on Fortinet generic blueprint : https://github.com/fortinet/azure-templates
+
+
+```shell
+./Step2-PrivateAKS.sh 
+```
+This second part has been kept in a small script and readable commands so that you can check the differents steps and options by yourself more easily.
+
+
+This deploy a jumphost VM in the transit area for convenience. 
+A AKS with the following options:
+
+- enable-private-cluster 
+- network-plugin azure 
+- generate-ssh-keys
+- outbound-type userDefinedRouting
+
+The result is a fully private setup (API and nodes) and ensuring there is firewall observability and prevention on outbound an inter-nodes traffic.
+![Architecture](images/SecureAKS.png)
+
+## Fortigate setup from you client (laptop)
+
+In addition you must install Fortigate support for Ansible:
+```shell
+ansible-galaxy collection install fortinet.fortios
+```
+
+Apply configuration to the FGT.
+Replace the IP with the public IP of your fortigate. You may need to retry if experiencing a timeout.
+```shell
+ansible-playbook fgt-playbook.yaml -i hosts -e ansible_host=52.174.188.48
+```
+
+## Connect to the jumphost
+
+If you want to use the jumphost in this setup, You can either use Azure BASTION access (not setup by default) or there is a redirection on the Fortigate.
+Find the Fortigate public IP (output of script or portal).
+```shell
+ssh azureuser@<FGT IP> -p 2222
+```
+Password is "Fortin3t-aks".
+To setup the Jumphost once logged on it:
+```shell
+git clone https://github.com/fortinet-solutions-cse/secured-AKS-refarch
+cd secured-AKS-refarch/jumphost
+sudo ./configure-clis.sh 
+export GROUP_NAME="ftnt-demo-aks"
+export REGION="westeurope"
+az login
+# log this as device on microsoft portal
+./collect-configurations.sh
+```
+
+Kubectl commands should work from this cli after this stage.
+
+
+## (Optionnal) using Ansible from the jumphost
+
+Once Step2 is completed you can ssh to fortigate from there:
+```shell
+exec ssh azureuser@172.27.40.73
+```
+Run the setup jumphost paragraph, then run the ansible commands from the jumphost.

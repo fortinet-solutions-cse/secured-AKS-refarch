@@ -1,0 +1,8 @@
+##trying to pass the license from configmap
+
+docker run -itd --memory=4096m  --env license.lic="-----BEGIN FV VM LICENSE-----\r\nQAAAAL4zhhhQKi0Ki8nkWZdl1wq0wz6C5gioLs0uge5HKbp9a80dK71Dugix/1bZ\r\n47dBIdh9VRcpVWx331gulJGiUOCAAAAALIAeo6S9Lv5w5z0s37ZQB39Ucfm0DhQU\r\noX6vylLV82WBc2J4cfHA2lnMgiQSYGH993xXf58EHb4pSHP30lcMM43R230jjms2\r\nZQ+qBNBLbH2rl8/hir8OfvOIPFIEvqOp3fER99RFN0Q0/6pQvyfnFRJXDTN/VLWh\r\nWAprf6EkVYo=\r\n-----END FV VM LICENSE-----\r\n" --name fwbnolic -p 8080:8 -p 90:9 -p 8443:43 -p 8022:22 -p 8023:23 -p 80:80 -p 443:443 --cap-add net_admin --cap-add net_raw --cap-add=sys_ptrace --privileged fweb-b0737
+
+
+
+https://mantis.fortinet.com/bug_view_page.php?bug_id=0611881
+##From

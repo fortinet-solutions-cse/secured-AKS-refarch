@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortiweb-single
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fortiweb-single
+  # strategy is supposed to ensure 1 single conf server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: fortiweb-single
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      restartPolicy: Always
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      -{{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+      - name: fweb
+        image: cnf-dr.plugtests.net/fortinet/fortiweb:6.3.4
+        command: ["/bin/docker_init"]
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN", "NET_RAW", "SYS_TIME", "SYS_PTRACE" ]
+#          allowPrivilegeEscalation: true
+#          privileged: true
+        resources:
+          requests:
+            cpu: 1
+            memory: 2048Mi
+          limits:
+            cpu: 2
+            memory: 4096Mi
+        env:
+        # Define the environment variable
+        - name: FWB_ADMIN_PASSWORD
+          value: "fortinet"
+        # of course can be replaced by a secret
+        ports:
+        - containerPort: 8
+          name: mgmt
+        - containerPort: 43
+          name: gui
+        - containerPort: 996
+          name: mgmt6
+        - containerPort: 997
+          name: mgmt7
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+
+

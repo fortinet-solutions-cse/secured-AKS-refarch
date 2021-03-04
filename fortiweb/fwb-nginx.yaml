@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fwbnginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fwbnginx
+  template:
+    metadata:
+      labels:
+        app: fwbnginx
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: nginx
+        image: nginx
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+          name: nginx
+      - name: fweb
+        image: fortistackscontainerregistry.azurecr.io/fortinet/fweb
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 443
+          name: fweb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fwbnginx
+  labels:
+    app: fwbnginx
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  # may try nodeport type to see if works better for K8S connector
+  ports:
+    - name: http
+      port: 40080
+      targetPort: 80
+    - name: https
+      port: 40443
+      targetPort: 443
+  selector:
+    app: fwbnginx

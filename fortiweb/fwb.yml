@@ -1,0 +1,118 @@
+---
+# Source: fortiweb/templates/imagePsecret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cnfdrsecret
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJjbmYtZHIucGx1Z3Rlc3RzLm5ldCI6eyJ1c2VybmFtZSI6ImRvY2tkciIsInBhc3N3b3JkIjoiQTJkb2M0RFIiLCJlbWFpbCI6InRlc3RlckBldHNpLm9yZyIsImF1dGgiOiJaRzlqYTJSeU9rRXlaRzlqTkVSUyJ9fX0=
+---
+# Source: fortiweb/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortiweb-single
+  labels:
+    app: fortiweb-single
+spec:
+  type: LoadBalancer
+  # may try nodeport type to see if works better for K8S connector
+  ports:
+    - port: 80
+      name: http
+    - port: 443
+      name: https
+    - name: mgmt
+      port: 8008
+      targetPort: 8
+    - name: gui
+      port: 8443
+      targetPort: 43
+    - name: mgmt6
+      port: 996
+      targetPort: 996
+    - name: mgmt7
+      port: 997
+      targetPort: 997
+  selector:
+    app: fortiweb-single
+---
+# Source: fortiweb/templates/deployment-conf.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortiweb-single
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fortiweb-single
+  # strategy is supposed to ensure 1 single conf server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: fortiweb-single
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: cnfdrsecret
+      containers:
+      - name: fweb
+        image: cnf-dr.plugtests.net/fortinet/fortiweb:6.3.4
+        command: ["/bin/docker_init"]
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN", "NET_RAW", "SYS_TIME", "SYS_PTRACE" ]
+#          allowPrivilegeEscalation: true
+#          privileged: true
+        resources:
+          requests:
+            cpu: 0.5
+            memory: 2048Mi
+          limits:
+            cpu: 2
+            memory: 4096Mi
+        env:
+        # Define the environment variable
+        - name: FWB_ADMIN_PASSWORD
+          value: "fortinet"
+        # of course can be replaced by a secret
+        ports:
+        - containerPort: 8
+          name: mgmt
+        - containerPort: 43
+          name: gui
+        - containerPort: 996
+          name: mgmt6
+        - containerPort: 997
+          name: mgmt7
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+---
+# Source: fortiweb/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "RELEASE-NAME-fortiweb-test-connection"
+  labels:
+    helm.sh/chart: fortiweb-0.5.2
+    app.kubernetes.io/name: fortiweb
+    app.kubernetes.io/instance: RELEASE-NAME
+    app.kubernetes.io/version: "6.3.4"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['RELEASE-NAME-fortiweb:80']
+  restartPolicy: Never
