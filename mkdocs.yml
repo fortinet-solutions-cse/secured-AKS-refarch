@@ -11,5 +11,9 @@ extra:
 theme: readthedocs
 nav:
 - Home: 'index.md'
+- Architecture: 'AKS-Private-secured.md'
+- Hands on: 'Hands_on_demos.md'
+- Kubernetes load-balancer controller for Fortigate: 'https://github.com/fortinet/k8s-fortigate-ctrl'
+- Official azure templates: 'https://github.com/fortinet/azure-templates'
 
 
