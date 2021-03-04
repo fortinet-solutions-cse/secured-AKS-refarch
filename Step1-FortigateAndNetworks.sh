@@ -24,11 +24,11 @@ az group create --name "$GROUP_NAME"  --location "$REGION"
 DEPLOY_NAME=$GROUP_NAME"-TRANSIT"
 echo "validating deployment"
 az  deployment group validate --name $DEPLOY_NAME  -g $GROUP_NAME \
- --template-uri https://raw.githubusercontent.com/40net-cloud/fortinet-azure-solutions/main/FortiGate/A-Single-VM/azuredeploy.json  \
+ --template-uri https://raw.githubusercontent.com/fortinet/azure-templates/main/FortiGate/A-Single-VM/azuredeploy.json \
  --parameters myparameters.json > $GROUP_NAME.validate.json
 echo "Deploying single VM and subnets"
 az  deployment group create --name $DEPLOY_NAME  -g $GROUP_NAME \
- --template-uri https://raw.githubusercontent.com/40net-cloud/fortinet-azure-solutions/main/FortiGate/A-Single-VM/azuredeploy.json  \
+ --template-uri  https://raw.githubusercontent.com/fortinet/azure-templates/main/FortiGate/A-Single-VM/azuredeploy.json \
  --parameters myparameters.json
 
 query="[?virtualMachine.name.starts_with(@, 'ftnt-ws')].{virtualMachine:virtualMachine.name, publicIP:virtualMachine.network.publicIpAddresses[0].ipAddress,privateIP:virtualMachine.network.privateIpAddresses[0]}"
