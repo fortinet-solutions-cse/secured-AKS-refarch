@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 #
 #    Secured AKS deployment
 #    Copyright (C) 2016 Fortinet  Ltd.
@@ -59,12 +59,17 @@ AKSSUBNET=`az network vnet subnet list     --resource-group  $GROUP_NAME     --v
 
 # Install the aks-preview extension
 az extension add --name aks-preview
+echo "Force all subnet traffic through the Fortigate"
+az network route-table route delete --route-table-name ftnt-demo-RT-PROTECTED-A -g $GROUP_NAME --name Subnet 
+az network route-table route delete --route-table-name ftnt-demo-RT-PROTECTED-B -g $GROUP_NAME --name Subnet 
 
 # set this to the name of your Azure Container Registry.  It must be globally unique
 MYACR=`echo $GROUP_NAME |sed 's/-//g'`ContainerReg
 # Run the following line to create an Azure Container Registry if you do not already have one
+echo "create an azure registry"
 az acr create -n $MYACR -g $GROUP_NAME --sku basic
 
+echo "create an AKS cluster"
 
 az aks create \
     --resource-group "$GROUP_NAME" \
@@ -82,8 +87,9 @@ az aks create \
     --node-vm-size Standard_A2_v2\
     --enable-cluster-autoscaler \
     --min-count 2 --max-count 5 \
+    --windows-admin-password Fortin3t-aks-win --windows-admin-username azureuser  \
     --attach-acr $MYACR \
-    --generate-ssh-keys --outbound-type userDefinedRouting
+    --generate-ssh-keys  --outbound-type userDefinedRouting
 #   --enable-pod-security-policy
 #    --dns-name-prefix ftnt-demo
 
@@ -95,19 +101,18 @@ az aks create \
 AKS_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name private-AKS --query nodeResourceGroup -o tsv)
 AKS_PRIV_DNS=$(az network private-dns  zone list -g $AKS_RESOURCE_GROUP -o tsv --query [0].name)
 FTNT_VNET_ID=$(az network vnet show --resource-group $GROUP_NAME --name ftnt-demo-vnet --query "id" -o tsv )
+echo "add AKS dns zone to transit networks"
 az network private-dns  link vnet create --name aks-dns --virtual-network "$FTNT_VNET_ID" --zone-name "$AKS_PRIV_DNS" \
    --registration-enabled false -g "$AKS_RESOURCE_GROUP"
-
+echo "get Kubernetes admin credentials"
 # Node count if quota restrictions
 az aks get-credentials --resource-group "$GROUP_NAME"  --name "private-AKS" --overwrite-existing
 
 FGTAZIP=`az network public-ip show --name FGTPublicIP   --resource-group $GROUP_NAME  --query ipAddress -o tsv`
+echo " *** DONE *** "
+echo ""
 echo " You can login on fortigate at https://$FGTAZIP"
 echo "Kubernetes credentials are in ~/.kube/config"
-## KAPI_ID=`az network private-endpoint show --name kube-apiserver --resource-group $AKS_RESOURCE_GROUP --query "networkInterfaces[0].id" -o tsv`
-## KAPI_IP=`az network  nic show --ids $KAPI_ID --query "ipConfigurations[0].privateIpAddress" -o tsv`
-
-## TODO add Bastion access ? or ansible rule or both
 
 echo "To configure the Fortigate do: "
 echo "ansible-playbook fgt-playbook.yaml -i hosts -e ansible_host=$FGTAZIP"

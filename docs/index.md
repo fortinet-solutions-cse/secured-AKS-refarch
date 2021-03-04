@@ -5,7 +5,7 @@ This repository provides hands on example to deploy a private and secured by For
 
 * [Azure Kubernetes Service](AKS-Private-secured.md) - Kubernetes reference architecture, environment setup
 * Quickstart:
-  **  [Docker image on your client and Forticlient IPsec to the Azure fortigate](Local%20Docker%20and%20VPN.md).
+  **  [Docker image on your client and Forticlient IPsec to the Azure fortigate](LocalDockerandVPN.md) .
   ** [using git, az and jq on your own shell then ssh to a provided jumphost VM inside the cluster.](JumphostUsage.md)
-* [Hands on demos](Hands%20on%20demos.md) - Protection step by step
+* [Hands on demos](Hands_on_demos.md) - Protection step by step
 
