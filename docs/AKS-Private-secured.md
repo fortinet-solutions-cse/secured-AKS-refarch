@@ -21,5 +21,6 @@ cd secured-AKS-refarch
 # Choose your way to cli
 
 Choose 1 way to use the scripts/cli etc...:
-- [Docker image on your client and Forticlient IPsec to the Azure fortigate](Local%20Docker%20and%20VPN.md).
-- [using git, az and jq on your own shell then ssh to a provided jumphost VM inside the cluster.](JumphostUsage.md)
+
+* [Docker image on your client and Forticlient IPsec to the Azure fortigate](Local%20Docker%20and%20VPN.md).
+* [using git, az and jq on your own shell then ssh to a provided jumphost VM inside the cluster.](JumphostUsage.md)
