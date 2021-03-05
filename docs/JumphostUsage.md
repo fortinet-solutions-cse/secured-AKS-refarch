@@ -67,10 +67,24 @@ az login
 Kubectl commands should work from this cli after this stage.
 
 
-## (Optionnal) using Ansible from the jumphost
+If returning information you are good to go for the hands on demos part.
+It is an supported AKS so you can also follow [AKS Tutorial](https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app)
+
+# Optionnal 
+
+
+## using Ansible from the jumphost
 
 Once Step2 is completed you can ssh to fortigate from there:
 ```shell
 exec ssh azureuser@172.27.40.73
 ```
 Run the setup jumphost paragraph, then run the ansible commands from the jumphost.
+
+## add Windows based nodepool
+
+```shell
+export GROUP_NAME="ftnt-demo-aks"
+export REGION="westeurope"
+./Step3-WindowsNodes.sh
+```

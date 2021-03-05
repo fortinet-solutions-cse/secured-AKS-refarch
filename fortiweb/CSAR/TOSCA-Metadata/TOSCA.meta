@@ -1,5 +1,0 @@
-CSAR-Version: '1.1'
-Created-By: Ericsson
-Entry-Definitions: Definitions/sandbox-cnf.yaml Entry-Helm-Definitions: Definitions/OtherTemplates/sandbox-cnf-1.0.0-3.tgz
-Entry-Images: Files/sandbox-cnf-image.tgz
-TOSCA-Meta-File-Version: '1.0'

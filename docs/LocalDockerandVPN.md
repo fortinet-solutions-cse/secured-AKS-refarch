@@ -80,4 +80,19 @@ Try to run kubectl commands:
 kubectl cluster-info
 ```
 
-For example.
+If returning information you are good to go for the hands on demos part.
+It is an supported AKS so you can also follow [AKS Tutorial](https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app)
+
+# Optionnal 
+
+## add Windows based nodepool
+
+```shell
+export GROUP_NAME="ftnt-demo-aks"
+export REGION="westeurope"
+./Step3-WindowsNodes.sh
+```
+
+## Use Lens
+
+Thanks to the vpn you can direclty and easily use [Lens](https://k8slens.dev/) directly on you laptop.
