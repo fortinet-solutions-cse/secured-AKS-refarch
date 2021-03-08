@@ -26,6 +26,9 @@ docker run -v $PWD:/Azure/ -e FGTCA -i --name az-aks-cli  -h az-aks-cli -t forti
 
 # Fortigate and networks
 You can customize region and name of the resource group if necessary (shared accounts for example). You must be able to manage service principals
+
+Warning if you want to effectively change region you must update region parameter in myparameters.json file
+
 ```shell
 az login
 export GROUP_NAME="ftnt-demo-aks"

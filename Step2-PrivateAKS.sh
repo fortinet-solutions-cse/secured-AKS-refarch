@@ -97,13 +97,6 @@ az aks create \
 # check addons: https://github.com/Azure/aks-engine/blob/master/docs/topics/clusterdefinitions.md#addons (like tiller/helm)
 # next private registry https://docs.microsoft.com/en-us/azure/aks/cluster-container-registry-integration
 
-# add the private dns to the transit network for kubectl to work on jumphost
-AKS_RESOURCE_GROUP=$(az aks show --resource-group $GROUP_NAME --name private-AKS --query nodeResourceGroup -o tsv)
-AKS_PRIV_DNS=$(az network private-dns  zone list -g $AKS_RESOURCE_GROUP -o tsv --query [0].name)
-FTNT_VNET_ID=$(az network vnet show --resource-group $GROUP_NAME --name ftnt-demo-vnet --query "id" -o tsv )
-echo "add AKS dns zone to transit networks"
-az network private-dns  link vnet create --name aks-dns --virtual-network "$FTNT_VNET_ID" --zone-name "$AKS_PRIV_DNS" \
-   --registration-enabled false -g "$AKS_RESOURCE_GROUP"
 echo "get Kubernetes admin credentials"
 # Node count if quota restrictions
 az aks get-credentials --resource-group "$GROUP_NAME"  --name "private-AKS" --overwrite-existing

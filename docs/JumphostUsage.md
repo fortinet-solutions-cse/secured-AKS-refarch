@@ -8,6 +8,11 @@ git clone https://github.com/fortinet-solutions-cse/secured-AKS-refarch
 cd secured-AKS-refarch
 ```
 ## Script to set the architecture
+
+You can customize region and name of the resource group if necessary (shared accounts for example). You must be able to manage service principals
+
+Warning if you want to effectively change region you must update region parameter in myparameters.json file
+
 ```shell
 az login
 export GROUP_NAME="ftnt-demo-aks"
