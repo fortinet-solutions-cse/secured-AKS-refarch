@@ -172,7 +172,10 @@ Connect with ssh [AKS nodes ssh access](https://docs.microsoft.com/en-us/azure/a
 SSH access to nodes for debug
 
 If not done already (jumphost) create a ssh keypair with ssh-keygen
-
+If you deployed the windows nodepool you will need to change the kubectl run command from Azure page like this:
+```shell
+kubectl run -it  aks-ssh --image=debian --overrides='{"apiVersion": "v1", "spec": {"nodeSelector": { "beta.kubernetes.io/os": "linux" }}}'
+```
 
 ## Nodes traffic
 
