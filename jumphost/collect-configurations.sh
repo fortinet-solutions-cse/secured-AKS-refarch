@@ -19,9 +19,6 @@
 
 # Be sure to have login (az login) first
 
-GROUP_NAME="ftnt-demo-aks"
-#REGION="francecentral"
-REGION="westeurope"
   # see https://docs.microsoft.com/en-gb/azure/aks/private-clusters
 
 # Node count if quota restrictions
