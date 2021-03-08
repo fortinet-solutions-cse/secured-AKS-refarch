@@ -88,3 +88,10 @@ export GROUP_NAME="ftnt-demo-aks"
 export REGION="westeurope"
 ./Step3-WindowsNodes.sh
 ```
+
+# Cleaning
+
+Remove the resource group on the portal or:
+```shell
+az group delete -g $GROUP_NAME -y
+```

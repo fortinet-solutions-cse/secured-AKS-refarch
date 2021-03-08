@@ -96,3 +96,10 @@ export REGION="westeurope"
 ## Use Lens
 
 Thanks to the vpn you can direclty and easily use [Lens](https://k8slens.dev/) directly on you laptop.
+
+# Cleaning
+
+Remove the resource group on the portal or:
+```shell
+az group delete -g $GROUP_NAME -y
+```

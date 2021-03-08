@@ -34,8 +34,12 @@ service/kubernetes         ClusterIP      10.8.0.1      <none>         443/TCP  
 In that case the IP to target is 172.27.41.36
 
 Then on the fortigate set a VIP and port forward:
+
 ![set VIP](images/SimpleAppVip.png)
+
+
 Add a firewall policy
+
 ![set Policy](images/SimpleAppPolicy.png)
 
 Of course adapt to your IP.
@@ -74,6 +78,7 @@ end
 ```
 
 You can now connect the http://<fgt IP>:8080 and it should like the following:
+
 ![AzureVoteGUI](images/AzureVoteGUI.png)
 
 If using the VPN acces you can go directly to the internal load balancer IP.
@@ -171,6 +176,7 @@ Or use:
 ```
 You receive a list of CLI to copy paste on the Fortigate, we cloud easily do an ansible playbook also.
 Once setup it should look like:
+
 ![K8SConnectorGUI](images/K8SConnectorGUI.png)
 
 With the connector you can now create dynamic firewall objects.
@@ -184,6 +190,7 @@ config firewall address
 end
 ````
 Will create a dynamic list of the Nodes VM ip only:
+
 ![Dynamic K8S list](images/DynamicK8SList.png)
 
 
@@ -194,6 +201,7 @@ We can now for example create a specific policy linked to applications stearing 
 
 To have antivirus on the fortigate we must enable SSL inspection.
 On the fortigate go to "ProtectedSubnets-to-Internet" policy (this is the Egress traffic):
+
 ![DeepinspectionDownload](images/DeepinspectionDownload.png)
 
 Get the file "Fortinet_CA_SSL.cer" to where you have the cli.
@@ -225,9 +233,11 @@ You can see the source code of this in the project.
 
 The second one should failed (timeout) you can get more details with ```kubectl describe pod eicar```
 And on the fortigate logs:
+
 ![Antivirus Logs](images/Logsantivirus.png)
 
 On fortiview panel in the fortigate:
+
 ![Fortiview threat](images/FortiviewAntivirus.png)
 
 
