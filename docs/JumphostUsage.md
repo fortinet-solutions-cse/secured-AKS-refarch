@@ -60,7 +60,7 @@ To setup the Jumphost once logged on it:
 ```shell
 git clone https://github.com/fortinet-solutions-cse/secured-AKS-refarch
 cd secured-AKS-refarch/jumphost
-sudo ./configure-clis.sh 
+./configure-clis.sh 
 export GROUP_NAME="ftnt-demo-aks"
 export REGION="westeurope"
 az login
