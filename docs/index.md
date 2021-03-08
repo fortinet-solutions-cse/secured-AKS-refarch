@@ -8,9 +8,9 @@ This repository provides hands on example to deploy a private and secured by For
 
 * Install Fortigate, private AKS clients and access:
 
-  **  [Docker image on your client and Forticlient IPsec to the Azure fortigate](LocalDockerandVPN.md) .
+  *  [Docker image on your client and Forticlient IPsec to the Azure fortigate](LocalDockerandVPN.md) .
 
-  ** [using git, az and jq on your own shell then ssh to a provided jumphost VM inside the cluster.](JumphostUsage.md)
+  * [using git, az and jq on your own shell then ssh to a provided jumphost VM inside the cluster.](JumphostUsage.md)
 
 
 * [Hands on demos](Hands_on_demos.md) - Protection step by step

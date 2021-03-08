@@ -1,10 +1,18 @@
 
 # CLI with the provided docker image
+
+This section assume you already run:
+```shell
+git clone https://github.com/fortinet-solutions-cse/secured-AKS-refarch
+cd secured-AKS-refarch
+```
+
+## Run with the provided Docker image with all cli installed
 ```shell
 docker run -v $PWD:/Azure/  -i --name az-aks-cli  -h az-aks-cli -t fortinetsolutioncse/az-aks-cli
 ```
 
-Type the rest of the commands in a shell inside the docker runtime.
+Type the rest of the commands in a shell inside this docker runtime.
 
 ## optionnal
 If like me you have internal SSL inspection you use the same image.

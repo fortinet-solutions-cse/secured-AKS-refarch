@@ -2,7 +2,11 @@
 
 Depending on your environement you will need Azure cli (Ansible at least 2.9 is good to have but optionnal)
 
-
+This section assume you already run:
+```shell
+git clone https://github.com/fortinet-solutions-cse/secured-AKS-refarch
+cd secured-AKS-refarch
+```
 ## Script to set the architecture
 ```shell
 az login
