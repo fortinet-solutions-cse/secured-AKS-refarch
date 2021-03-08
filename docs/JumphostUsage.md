@@ -104,3 +104,5 @@ Remove the resource group on the portal or:
 ```shell
 az group delete -g $GROUP_NAME -y
 ```
+
+TODO: add service principal rm
