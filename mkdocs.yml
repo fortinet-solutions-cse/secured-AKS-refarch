@@ -9,6 +9,8 @@ extra:
     - type: 'github'
       link: 'https://github.com/fortinet-solutions-cse/secured-AKS-refarch'
 theme: readthedocs
+extra_css:
+ - css/custom.css
 nav:
 - Home: 'index.md'
 - Architecture: 'AKS-Private-secured.md'
