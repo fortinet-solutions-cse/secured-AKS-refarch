@@ -84,13 +84,18 @@ It is an supported AKS so you can also follow [AKS Tutorial](https://docs.micros
 # Optionnal 
 
 
-## using Ansible from the jumphost
+## running Ansible from the jumphost
 
-Once Step2 is completed you can ssh to fortigate from there:
+
+Once Step2 is completed:
+On the portal you can find the jumphost public IP and directly connect to it.
+
+Or you can ssh to the fortigate (fgtadmin/Fortin3t-aks) from there:
 ```shell
 exec ssh azureuser@172.27.40.73
 ```
-Run the setup jumphost paragraph, then run the ansible commands from the jumphost.
+
+**Run the setup jumphost paragraph** , then run the ansible commands from the jumphost.
 
 ## add Windows based nodepool
 
