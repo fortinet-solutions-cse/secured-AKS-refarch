@@ -42,6 +42,8 @@ The result is a fully private setup (API and nodes) and ensuring there is firewa
 
 ## Fortigate setup from you client (laptop)
 
+If you prefer to run from the jumphost see at the end of this doc.
+
 In addition you must install Fortigate support for Ansible:
 ```shell
 ansible-galaxy collection install fortinet.fortios
