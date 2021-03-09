@@ -1,7 +1,7 @@
 # mkdocs.yml -- MkDocs configuration, all *.md files relative to docs/
 site_name: Fortinet AKS reference architecture
 repo_url: 'https://github.com/fortinet-solutions-cse/secured-AKS-refarch'
-edit_uri: edit/master/docs
+edit_uri: edit/main/docs
 site_description: 'Demo code of a reference architecture to secure AKS platform and applications with Fortinet products.'
 extra:
   favicon: 'https://fortinet.com/favicon.ico'
