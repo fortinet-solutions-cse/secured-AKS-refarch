@@ -214,7 +214,7 @@ On the fortigate go to "ProtectedSubnets-to-Internet" policy (this is the Egress
 
 ![DeepinspectionDownload](images/DeepinspectionDownload.png)
 
-Get the file "Fortinet_CA_SSL.cer" to where you have the cli.
+Download the file "Fortinet_CA_SSL.cer" then upload/put it where you run clis.
 
 To move to the jumphost:
 ````shell
