@@ -5,19 +5,19 @@ This document simple examples that are ready to use to test the differents prote
 This is made to be fully compatible with AKS Tutorial and just add the security checks in-traffic provided by Fortigate.
 You can follow the Tutorial with or without this refarch.
 
-
-
-
 ## Simple application internal LB and VIP
 
 In applications folder you will find a ready to use azure voting app example based on Azure AKS tutorial.
 Simply run
+
 ```shell
 kubectl apply -f applications/voting-app.yaml
 ```
+
 You can check the yaml and see that we use the internal loadbalancer.
 
 As a result once deployed:
+
 ```shell
 azureuser@ftnt-demo-jumphost:~/secured-AKS-refarch$ kubectl get pods,svc
 NAME                                    READY   STATUS    RESTARTS   AGE
@@ -37,7 +37,6 @@ Then on the fortigate set a VIP and port forward:
 
 ![set VIP](images/SimpleAppVip.png)
 
-
 Add a firewall policy
 
 ![set Policy](images/SimpleAppPolicy.png)
@@ -45,6 +44,7 @@ Add a firewall policy
 Of course adapt to your IP.
 
 Using cli:
+
 ```shell
 config firewall vip
     edit "To vote ilb"
@@ -77,27 +77,29 @@ config firewall policy
 end
 ```
 
-You can now connect the http://<fgt IP>:8080 and it should like the following:
+You can now connect the ```http://<fgt IP>:8080``` and it should like the following:
 
 ![AzureVoteGUI](images/AzureVoteGUI.png)
 
 If using the VPN acces you can go directly to the internal load balancer IP.
 
 To stress the system and see the Kubernetes autoscaling in action you can use:
+
 ```shell
  ab -r -s 120 -c 500 -n 120000 -p vote.txt -T application/x-www-form-urlencoded -k http://<fgt IP>:8080
 ```
+
 Wait a bit and monitor your number of pods.
 
 The fortigate can then easily do the usual protection, DoS, and block known bad sites, limit repetitions etc..
 
-
 ## Fortigate as a LoadBalancer
 
-You can use the prototype code from https://github.com/fortinet/k8s-fortigate-ctrl to do even more advanced check 
+You can use the prototype code from <https://github.com/fortinet/k8s-fortigate-ctrl> to do even more advanced check
 on the fortigate. If commercially interested contact your Fortinet Rep. This one is alpha code.
 
 Get the code an deploy the controller in K8S
+
 ```shell
 git clone https://github.com/fortinet/k8s-fortigate-ctrl
 cd k8s-fortigate-ctrl
@@ -106,7 +108,9 @@ kubectl create namespace fortinet
 kubectl apply -n fortinet -f serviceaccount.yaml -f ctrl-role.yml -f rolebinding.yaml 
 kubectl  -n fortinet apply -f deployment.yaml
 ```
+
 To verify you can do:
+
 ```shell
 kubectl get fortigates.fortinet.com   fgt-az
 NAME     STATUS      EXTERNALIP
@@ -114,11 +118,14 @@ fgt-az   connected   40.114.251.161
 ```
 
 Deploy or update the voting app:
+
 ```shell
 kubectl apply -f examples/voting-app-antiaffinity.yaml
 ```
+
 The only difference for the LoadBlancer is the annotation to use Fortigate controller:
 and look like this:
+
 ```yaml
 ---
 apiVersion: v1
@@ -139,40 +146,48 @@ spec:
     app: azure-vote-front
 ```
 
-You can access the app using http://<FGT public IP>:90/
+You can access the app using ```http://<FGT public IP>:90/```
 
 See the LB CRD feedback
+
 ```shell
 kubectl get lb-fgt
 NAME               STATUS   FORTIGATE
 azure-vote-front   1/1      fgt-az
 ```
+
 The status represent the number of active health checks on the FGT versus number of target servers.
 
 You make the FGT LB a TLS endpoint
+
 ```shell
 kubectl edit lb-fgts.fortigates.fortinet.com  azure-vote-front
 ```
-in spec: section replace   lb-type: http with   lb-type: https 
+
+in spec: section replace   lb-type: http with   lb-type: https
 
 This allow to edit the created policy to do for example antivirus checks on random files uploaded to the Cluster or more advanced ips rules on the ingress traffic.
 
-
 ### Tip
+
 To have a nice monitoring of kubectl states
+
 ```shell script
 watch -c "kubectl get pods,lb-fgt,svc -o wide|ccze -A"
 ```
+
 Use the ab command presented earlier to trigger autoscaling.
 
 ## Advanced debugging
-**DO not do this in production please**
+
+Waring: **DO not do this in production please**
 
 Connect with ssh [AKS nodes ssh access](https://docs.microsoft.com/en-us/azure/aks/ssh) (for debug)
 SSH access to nodes for debug
 
 If not done already (jumphost) create a ssh keypair with ssh-keygen
 If you deployed the windows nodepool you will need to change the kubectl run command from Azure page like this:
+
 ```shell
 kubectl run -it  aks-ssh --image=debian --overrides='{"apiVersion": "v1", "spec": {"nodeSelector": { "beta.kubernetes.io/os": "linux" }}}'
 ```
@@ -181,15 +196,18 @@ kubectl run -it  aks-ssh --image=debian --overrides='{"apiVersion": "v1", "spec"
 
 We now are going to enable the FGT K8S connector. You can go and do it yourself on th gui.
 Or use:
+
 ```shell
 ./ConfigureK8SConnector.sh
 ```
+
 You receive a list of CLI to copy paste on the Fortigate, we cloud easily do an ansible playbook also.
 Once setup it should look like:
 
 ![K8SConnectorGUI](images/K8SConnectorGUI.png)
 
 With the connector you can now create dynamic firewall objects.
+
 ````shell
 config firewall address
     edit "K8S nodes"
@@ -199,10 +217,10 @@ config firewall address
     next
 end
 ````
+
 Will create a dynamic list of the Nodes VM ip only:
 
 ![Dynamic K8S list](images/DynamicK8SList.png)
-
 
 We can now for example create a specific policy linked to applications stearing to the traffic initiated on the nodes:
 **TODO*
@@ -217,28 +235,34 @@ On the fortigate go to "ProtectedSubnets-to-Internet" policy (this is the Egress
 Download the file "Fortinet_CA_SSL.cer" then upload/put it where you run clis.
 
 To move to the jumphost:
+
 ````shell
 scp -P 2222 Fortinet_CA_SSL.cer azureuser@40.114.251.161:
 ````
 
 Then make all you nodes trust the CA
+
 ```shell
 ./ConfigureK8SnodesCA.sh ~/Fortinet_CA_SSL.cer 
 ```
+
 Enable your Egress policy to use antivirus and deep inspection before next steps.
 
 Test:
+
 ```shell
 # a legite image:
 kubectl run ub --image=ubuntu bash -it
 ```
+
 Should work, you can exist and delete the pod.
 
-
 With an image containing a virus (EICAR is harmless)
+
 ```shell
 kubectl run eicar --image=fortinetsolutioncse/ubuntu-eicar bash -it
 ```
+
 You can see the source code of this in the project.
 
 The second one should failed (timeout) you can get more details with ```kubectl describe pod eicar```
@@ -249,17 +273,3 @@ And on the fortigate logs:
 On fortiview panel in the fortigate:
 
 ![Fortiview threat](images/FortiviewAntivirus.png)
-
-
-
-
-
-
-
-
-
-
-
-
-
-

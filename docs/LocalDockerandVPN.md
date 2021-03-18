@@ -2,12 +2,14 @@
 # CLI with the provided docker image
 
 This section assume you already run:
+
 ```shell
 git clone https://github.com/fortinet-solutions-cse/secured-AKS-refarch
 cd secured-AKS-refarch
 ```
 
 ## Run with the provided Docker image with all cli installed
+
 ```shell
 docker run -v $PWD:/Azure/  -i --name az-aks-cli  -h az-aks-cli -t fortinetsolutioncse/az-aks-cli
 ```
@@ -15,6 +17,7 @@ docker run -v $PWD:/Azure/  -i --name az-aks-cli  -h az-aks-cli -t fortinetsolut
 Type the rest of the commands in a shell inside this docker runtime.
 
 ## optionnal
+
 If like me you have internal SSL inspection you use the same image.
 (Curious check the code).
 
@@ -25,6 +28,7 @@ docker run -v $PWD:/Azure/ -e FGTCA -i --name az-aks-cli  -h az-aks-cli -t forti
 ```
 
 # Fortigate and networks
+
 You can customize region and name of the resource group if necessary (shared accounts for example). You must be able to manage service principals
 
 Warning if you want to effectively change region you must update region parameter in myparameters.json file
@@ -35,12 +39,14 @@ export GROUP_NAME="ftnt-demo-aks"
 export REGION="westeurope"
 ./Step1-FortigateAndNetworks.sh
 ```
+
 This deploy a single fortigate VM with predefined setup. To login to the fortigate use fgtadmin/Fortin3t-aks.
 
 It can be replaced by a more advanced Fortigate in HA, scalable transit etc..
-Depends on Fortinet generic blueprint : https://github.com/fortinet/azure-templates
+Depends on Fortinet generic blueprint : <https://github.com/fortinet/azure-templates>
 
-# AKS/ACR architecture 
+# AKS/ACR architecture
+
 ```shell
 export GROUP_NAME="ftnt-demo-aks"
 export REGION="westeurope"
@@ -49,12 +55,11 @@ export REGION="westeurope"
 
 This second part has been kept in a small script and readable commands so that you can check the differents steps and options by yourself more easily.
 
-
-This deploy a jumphost VM in the transit area for convenience. 
+This deploy a jumphost VM in the transit area for convenience.
 A AKS with the following options:
 
-- enable-private-cluster 
-- network-plugin azure 
+- enable-private-cluster
+- network-plugin azure
 - generate-ssh-keys
 - outbound-type userDefinedRouting
 
@@ -62,12 +67,13 @@ The result is a fully private setup (API and nodes) and ensuring there is firewa
 ![Architecture](images/SecureAKS.png)
 
 ## Fortigate setup
+
 Apply configuration to the FGT.
 Replace the IP with the public IP of your fortigate. You may need to retry if experiencing a timeout.
+
 ```shell
 ansible-playbook fgt-playbook.yaml -i hosts -e ansible_host=52.174.188.48
 ```
-
 
 ## VPN to Fortigate
 
@@ -87,6 +93,7 @@ Kubectl commands should work after this stage.
 # Use AKS
 
 Try to run kubectl commands:
+
 ```shell
 kubectl cluster-info
 ```
@@ -94,7 +101,7 @@ kubectl cluster-info
 If returning information you are good to go for the hands on demos part.
 It is an supported AKS so you can also follow [AKS Tutorial](https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app)
 
-# Optionnal 
+# Optionnal
 
 ## add Windows based nodepool
 
@@ -111,6 +118,7 @@ Thanks to the vpn you can direclty and easily use [Lens](https://k8slens.dev/) d
 # Cleaning
 
 Remove the resource group on the portal or:
+
 ```shell
 az group delete -g $GROUP_NAME -y
 ```

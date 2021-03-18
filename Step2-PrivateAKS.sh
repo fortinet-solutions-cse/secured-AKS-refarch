@@ -64,7 +64,7 @@ az network route-table route delete --route-table-name ftnt-demo-RT-PROTECTED-A 
 az network route-table route delete --route-table-name ftnt-demo-RT-PROTECTED-B -g $GROUP_NAME --name Subnet 
 
 # set this to the name of your Azure Container Registry.  It must be globally unique
-MYACR=`echo $GROUP_NAME |sed 's/-//g'`ContainerReg
+MYACR=`echo $GROUP_NAME |sed 's/-//g'``uuid -F SIV | cut -c 1-5`ContainerReg
 # Run the following line to create an Azure Container Registry if you do not already have one
 echo "create an azure registry"
 az acr create -n $MYACR -g $GROUP_NAME --sku basic

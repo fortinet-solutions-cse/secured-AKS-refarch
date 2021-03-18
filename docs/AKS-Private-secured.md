@@ -9,16 +9,19 @@ Contact a Fortinet representative for a completly scalable and automated solutio
 
 The reference architecture you are going to deploy can be illustrated as follow:
 ![Architecture](images/SecureAKS.png)
-# Bootstrap
+
+## Bootstrap
+
 Of course you need an Azure account with all necessary subscriptions and permissions.
 On your client (laptop)
 Get the code
+
 ```shell
 git clone https://github.com/fortinet-solutions-cse/secured-AKS-refarch
 cd secured-AKS-refarch
 ```
 
-# Choose your way to cli
+## Choose your way to cli
 
 Choose 1 way to use the scripts/cli etc...:
 
