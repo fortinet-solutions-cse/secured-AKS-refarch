@@ -1,0 +1,46 @@
+config application list
+    edit "Docker nodes"
+        set other-application-log enable
+        set unknown-application-action block
+        set unknown-application-log enable
+        config entries
+            edit 1
+                set application 46402 46403 46405 48002 41469 40565 40568 16270 38924 16270
+                set action pass
+                set log disable
+            next
+            edit 2
+                set category 2 3 5 6 7 8 12 15 17 21 22 23 25 26 28 29 30 31 32
+            next
+        end
+    next
+end
+config firewall address
+    edit "K8S nodes"
+        set type dynamic
+        set sdn "AKS"
+        set filter "K8S_Label.beta.kubernetes.io/os=linux | K8S_Label.kubernetes.io/os=linux"
+    next
+end
+
+config firewall policy
+    edit 8
+        set name "NodesEgress"
+        set srcintf "port2"
+        set dstintf "port1"
+        set srcaddr "K8S nodes"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+        set ssl-ssh-profile "deep-inspection"
+        set av-profile "default"
+        set webfilter-profile "default"
+        set dnsfilter-profile "default"
+        set ips-sensor "protect_client"
+        set application-list "Docker nodes"
+        set logtraffic all
+        set nat enable
+    next
+end
