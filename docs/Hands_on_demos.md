@@ -173,19 +173,19 @@ This allow to edit the created policy to do for example antivirus checks on rand
 To have a nice monitoring of kubectl states
 
 ```shell script
-watch -c "kubectl get pods,lb-fgt,svc -o wide|ccze -A"
+watch -c "kubectl get pods,lb-fgt,svc -o wide|ccze -A" 
 ```
 
 Use the ab command presented earlier to trigger autoscaling.
 
 ## Advanced debugging
 
-Waring: **DO not do this in production please**
+Warning: **DO not do this in production please**
 
 Connect with ssh [AKS nodes ssh access](https://docs.microsoft.com/en-us/azure/aks/ssh) (for debug)
 SSH access to nodes for debug
 
-If not done already (jumphost) create a ssh keypair with ssh-keygen
+Create a ssh keypair with ssh-keygen
 If you deployed the windows nodepool you will need to change the kubectl run command from Azure page like this:
 
 ```shell

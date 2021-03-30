@@ -60,8 +60,8 @@ AKSSUBNET=`az network vnet subnet list     --resource-group  $GROUP_NAME     --v
 # Install the aks-preview extension
 az extension add --name aks-preview
 echo "Force all subnet traffic through the Fortigate"
-az network route-table route delete --route-table-name ftnt-demo-RT-PROTECTED-A -g $GROUP_NAME --name Subnet 
-az network route-table route delete --route-table-name ftnt-demo-RT-PROTECTED-B -g $GROUP_NAME --name Subnet 
+az network route-table route delete --route-table-name $GROUP_NAME-RT-PROTECTED-A  -g $GROUP_NAME --name Subnet 
+az network route-table route delete --route-table-name $GROUP_NAME-RT-PROTECTED-B -g $GROUP_NAME --name Subnet 
 
 # set this to the name of your Azure Container Registry.  It must be globally unique
 MYACR=`echo $GROUP_NAME |sed 's/-//g'``uuid -F SIV | cut -c 1-5`ContainerReg
@@ -74,6 +74,7 @@ echo "create an AKS cluster"
 az aks create \
     --resource-group "$GROUP_NAME" \
     --name "private-AKS" \
+    --enable-vmss  \
     --load-balancer-sku standard \
     --enable-private-cluster \
     --network-plugin azure \
@@ -89,7 +90,7 @@ az aks create \
     --min-count 2 --max-count 5 \
     --windows-admin-password Fortin3t-aks-win --windows-admin-username azureuser  \
     --attach-acr $MYACR \
-    --generate-ssh-keys  --outbound-type userDefinedRouting
+    --outbound-type userDefinedRouting --no-ssh-key 
 #   --enable-pod-security-policy
 #    --dns-name-prefix ftnt-demo
 
